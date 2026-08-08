@@ -629,6 +629,9 @@ export function createBuiltinTools(sandboxId: string): AutomatonTool[] {
       },
       execute: async (args, ctx) => {
         const commit = args.commit as string | undefined;
+        if (process.env.AUTOMATON_ALLOW_SELF_UPDATE !== "creator-reviewed") {
+          return "BLOCKED: Self-updates are disabled. All upstream changes must be reviewed and applied manually by the creator. (Set AUTOMATON_ALLOW_SELF_UPDATE=creator-reviewed only after human review of each commit.)";
+        }
 
         // Run git commands inside sandbox via conway.exec()
         const run = async (cmd: string) => {
