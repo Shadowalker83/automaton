@@ -54,6 +54,9 @@ export async function installSkillFromGit(
   db: AutomatonDatabase,
   _conway: ConwayClient,
 ): Promise<Skill | null> {
+  if (process.env.AUTOMATON_ALLOW_REMOTE_SKILLS !== "creator-reviewed") {
+    throw new Error("BLOCKED: Remote skill installation is disabled. Skills must be reviewed and installed manually by the creator.");
+  }
   // Validate inputs to prevent injection
   if (!SKILL_NAME_RE.test(name)) {
     throw new Error(`Invalid skill name: "${name}". Must match ${SKILL_NAME_RE.source}`);
