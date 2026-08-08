@@ -6,6 +6,10 @@
  * Cleans up sandbox on ANY failure after creation.
  */
 
+import { getRepoInfo } from "../self-mod/upstream.js";
+
+/** Repo children clone from. Set AUTOMATON_REPO_URL to your reviewed fork. */
+const AUTOMATON_REPO_URL = process.env.AUTOMATON_REPO_URL || "https://github.com/Conway-Research/automaton.git";
 import type {
   ConwayClient,
   AutomatonIdentity,
@@ -129,7 +133,7 @@ export async function spawnChild(
     // Install runtime (on the CHILD sandbox)
     await childConway.exec("apt-get update -qq && apt-get install -y -qq nodejs npm git curl", 120_000);
     await childConway.exec(
-      "git clone https://github.com/Conway-Research/automaton.git /root/automaton && cd /root/automaton && npm install && npm run build",
+      `git clone ${AUTOMATON_REPO_URL} /root/automaton && cd /root/automaton && git checkout ${getRepoInfo().headHash} && npm install --ignore-scripts && npm run build`,
       180_000,
     );
 
@@ -269,7 +273,7 @@ async function spawnChildLegacy(
       120_000,
     );
     await childConway.exec(
-      "git clone https://github.com/Conway-Research/automaton.git /root/automaton && cd /root/automaton && npm install && npm run build",
+      `git clone ${AUTOMATON_REPO_URL} /root/automaton && cd /root/automaton && git checkout ${getRepoInfo().headHash} && npm install --ignore-scripts && npm run build`,
       180_000,
     );
     await childConway.exec("mkdir -p /root/.automaton", 10_000);
