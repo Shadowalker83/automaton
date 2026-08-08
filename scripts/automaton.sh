@@ -3,7 +3,7 @@
 # curl -fsSL https://conway.tech/automaton.sh | sh
 set -e
 
-REPO="https://github.com/Conway-Research/automaton.git"
+REPO="${AUTOMATON_REPO_URL:-https://github.com/Conway-Research/automaton.git}"
 
 # Determine install directory
 if [ -n "$AUTOMATON_DIR" ]; then
@@ -44,7 +44,7 @@ fi
 # Clone or update
 if [ -d "$INSTALL_DIR/.git" ]; then
   echo "[INFO]  Updating existing installation at $INSTALL_DIR..."
-  cd "$INSTALL_DIR" && git pull --ff-only
+  echo "[INFO]  Auto-update disabled. Review upstream commits manually (git fetch && git log HEAD..origin/main -p), then git merge --ff-only after review."; cd "$INSTALL_DIR"
 else
   echo "[INFO]  Cloning automaton to $INSTALL_DIR..."
   mkdir -p "$(dirname "$INSTALL_DIR")"
