@@ -54,15 +54,16 @@ export async function installSkillFromGit(
   db: AutomatonDatabase,
   _conway: ConwayClient,
 ): Promise<Skill | null> {
-  if (process.env.AUTOMATON_ALLOW_REMOTE_SKILLS !== "creator-reviewed") {
-    throw new Error("BLOCKED: Remote skill installation is disabled. Skills must be reviewed and installed manually by the creator.");
-  }
   // Validate inputs to prevent injection
   if (!SKILL_NAME_RE.test(name)) {
     throw new Error(`Invalid skill name: "${name}". Must match ${SKILL_NAME_RE.source}`);
   }
   if (!SAFE_URL_RE.test(repoUrl)) {
     throw new Error(`Invalid repo URL: "${repoUrl}". Must be an http(s) URL with no shell metacharacters.`);
+  }
+
+  if (process.env.AUTOMATON_ALLOW_REMOTE_SKILLS !== "creator-reviewed") {
+    throw new Error("BLOCKED: Remote skill installation is disabled. Skills must be reviewed and installed manually by the creator.");
   }
 
   const resolvedDir = resolveHome(skillsDir);
@@ -111,6 +112,10 @@ export async function installSkillFromUrl(
   }
   if (!SAFE_URL_RE.test(url)) {
     throw new Error(`Invalid URL: "${url}". Must be an http(s) URL with no shell metacharacters.`);
+  }
+
+  if (process.env.AUTOMATON_ALLOW_REMOTE_SKILLS !== "creator-reviewed") {
+    throw new Error("BLOCKED: Remote skill installation is disabled. Skills must be reviewed and installed manually by the creator.");
   }
 
   const resolvedDir = resolveHome(skillsDir);
